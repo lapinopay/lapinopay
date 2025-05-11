@@ -1,0 +1,9 @@
+.lapinopay-payment-method-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.lapinopay-payment-method-wrapper img {
+    display: flex;
+    width: 100%;
+}
