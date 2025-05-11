@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name: LapinoPay
+ * Plugin Name: LapinoPay - Instant USDC Payment Gateway
  * Plugin URI: https://lapinopay.com/docs/payment-gateway
  * Description: Instant Approval High Risk Merchant Gateway with instant payouts to your USDC wallet.
- * Version: 1.0.0
+ * Version: 1.1.8
  * Requires Plugins: woocommerce
  * Requires at least: 5.8
  * Tested up to: 6.8
