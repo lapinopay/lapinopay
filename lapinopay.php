@@ -185,4 +185,18 @@ add_action('wp_enqueue_scripts', 'lapinopay_enqueue_styles');
         flush_rewrite_rules();
     });
 
+    add_action('init', function () {
+        if (isset($_GET['lapinopay_checkout'])) {
+            $file = plugin_dir_path(__FILE__) . 'checkout.html';
+    
+            if (file_exists($file)) {
+                header('Content-Type: text/html');
+                readfile($file);
+                exit;
+            } else {
+                wp_die('Checkout page not found.');
+            }
+        }
+    });
+
 ?>
