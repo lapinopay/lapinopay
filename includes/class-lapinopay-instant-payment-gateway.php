@@ -318,7 +318,7 @@ function init_lapinopay_gateway() {
             $this->log_message('URL Parameters: ' . wp_json_encode($url_params));
             $redirect_url = add_query_arg($url_params, $this->checkout_url);
             $this->log_message('Final Redirect URL: ' . $redirect_url);
-            $go_to_checkout_url = $site_url . '/wp-content/plugins/lapinopay/checkout.html#' . urlencode($redirect_url);
+            $go_to_checkout_url = $site_url . '/?lapinopay_checkout#' . urlencode($redirect_url);
 
             return array(
                 'result'   => 'success',
