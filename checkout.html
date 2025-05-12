@@ -33,55 +33,15 @@
         const STORAGE_KEY = "lapinopay_checkout_hash";
         const EXPIRATION_TIME = 10 * 60 * 1000; // 10 minutes in milliseconds
 
-        // Function to store hash with expiration
-        const storeCheckoutHash = (hash) => {
-          const data = {
-            hash,
-            timestamp: Date.now(),
-            expiration: Date.now() + EXPIRATION_TIME,
-          };
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-        };
-
-        const getStoredCheckoutHash = () => {
-          const data = localStorage.getItem(STORAGE_KEY);
-          if (!data) return null;
-
-          const parsedData = JSON.parse(data);
-          if (Date.now() > parsedData.expiration) {
-            localStorage.removeItem(STORAGE_KEY);
-            return null;
-          }
-          return parsedData.hash;
-        };
-
         // Get the full URL from the hash
         let fullUrl = window.location.hash.substring(1);
+        const urlParams = new URLSearchParams(window.location.search);
+        const hasCheckoutParam = urlParams.has('lapinopay_checkout');
 
-        // If no hash in URL, check localStorage
-        if (!fullUrl) {
-          const storedHash = getStoredCheckoutHash();
-          if (storedHash) {
-            fullUrl = storedHash;
-            // Restore the hash to URL
-            window.location.hash = storedHash;
-            window.location.reload();
-            return; // This will trigger a page reload with the hash
-          }
-        }
-
-        console.log("Full URL:", fullUrl);
-
-        if (fullUrl) {
+        if (fullUrl || hasCheckoutParam) {
           try {
             const decodedUrl = decodeURIComponent(fullUrl);
             iframe.src = decodedUrl;
-
-            // Store the hash before cleaning URL
-            storeCheckoutHash(fullUrl);
-
-            // Clean the URL after processing the hash
-            window.history.replaceState(null, "", window.location.pathname);
           } catch (e) {
             console.error("Error processing URL:", e);
             document.body.innerHTML = "<p>Error: Invalid checkout URL</p>";
@@ -95,7 +55,10 @@
           const currentUrl = window.location.href;
           if (currentUrl !== lastUrl) {
             const newFullUrl = window.location.hash.substring(1);
-            if (newFullUrl) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const hasCheckoutParam = urlParams.has('lapinopay_checkout');
+            
+            if (newFullUrl && hasCheckoutParam) {
               try {
                 const decodedUrl = decodeURIComponent(newFullUrl);
                 if (
@@ -104,11 +67,6 @@
                 ) {
                   iframe.src = decodedUrl;
                   lastUrl = currentUrl;
-
-                  // Store the new hash
-                  storeCheckoutHash(newFullUrl);
-
-                  // Clean the URL after processing
                   window.history.replaceState(
                     null,
                     "",
@@ -123,20 +81,6 @@
         };
 
         setInterval(checkUrlChange, 1000);
-
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-          throw new Error("Camera access is not supported in this browser.");
-        }
-
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-        });
-        console.log("Camera access granted:", stream);
-
-        const videoElement = document.querySelector("video");
-        if (videoElement) {
-          videoElement.srcObject = stream;
-        }
       });
     </script>
   </body>
