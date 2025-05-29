@@ -180,18 +180,28 @@ add_action('wp_enqueue_scripts', 'lapinopay_enqueue_styles');
         add_filter('rest_jsonp_enabled', '__return_true');
     });
 
-    // Add rewrite rules flush on plugin activation
-    register_activation_hook(__FILE__, function() {
-        flush_rewrite_rules();
-    });
-
-    add_action('init', function () {
-        if (isset($_GET['lapinopay_checkout'])) {
+    // Handle the checkout page
+    add_action('template_redirect', function() {
+        if (get_query_var('lapinopay_checkout')) {
             $file = plugin_dir_path(__FILE__) . 'checkout.html';
-    
+            
             if (file_exists($file)) {
-                header('Content-Type: text/html');
-                readfile($file);
+                // Initialize WP_Filesystem
+                global $wp_filesystem;
+                if (!function_exists('WP_Filesystem')) {
+                    require_once(ABSPATH . 'wp-admin/includes/file.php');
+                }
+                
+                if (!WP_Filesystem()) {
+                    wp_die('Failed to initialize filesystem.');
+                }
+
+                // Set proper headers
+                header('Content-Type: text/html; charset=UTF-8');
+                header('X-Content-Type-Options: nosniff');
+                
+                // Use WP_Filesystem to read and output the file
+                echo wp_kses_post($wp_filesystem->get_contents($file));
                 exit;
             } else {
                 wp_die('Checkout page not found.');
@@ -199,4 +209,47 @@ add_action('wp_enqueue_scripts', 'lapinopay_enqueue_styles');
         }
     });
 
+    // Add rewrite rules for checkout page
+    add_action('init', function() {
+        add_rewrite_rule(
+            '^lapinopay_checkout/?$',
+            'index.php?lapinopay_checkout=1',
+            'top'
+        );
+    });
+
+    // Add query vars
+    add_filter('query_vars', function($vars) {
+        $vars[] = 'lapinopay_checkout';
+        return $vars;
+    });
+
+    // Flush rewrite rules on plugin activation
+    register_activation_hook(__FILE__, function() {
+        add_rewrite_rule(
+            '^lapinopay_checkout/?$',
+            'index.php?lapinopay_checkout=1',
+            'top'
+        );
+        flush_rewrite_rules();
+    });
+
+    // Flush rewrite rules on plugin deactivation
+    register_deactivation_hook(__FILE__, function() {
+        flush_rewrite_rules();
+    });
+
+    // Include the payment gateway class
+    add_action('plugins_loaded', function() {
+        if (!class_exists('WC_Payment_Gateway')) {
+            return;
+        }
+        include_once(plugin_dir_path(__FILE__) . 'includes/class-lapinopay-instant-payment-gateway.php');
+    });
+
+    // Add the gateway to WooCommerce
+    add_filter('woocommerce_payment_gateways', function($gateways) {
+        $gateways[] = 'WC_LapinoPay_Instant_Payment_Gateway';
+        return $gateways;
+    });
 ?>

@@ -7,3 +7,281 @@
     display: flex;
     width: 100%;
 }
+
+#add_payment_method #payment div.payment_box::before,
+.woocommerce-cart #payment div.payment_box::before,
+.woocommerce-checkout #payment div.payment_box::before {
+    display: none !important;
+}
+
+.payment_box.payment_method_lapinopay-instant-payment-gateway-guardarian {
+    background-color: transparent !important;
+    padding: 0 !important;
+    border: none !important;
+    margin: 0 !important;
+}
+
+.form-row.place-order {
+    display: none !important;
+    padding: 0 !important;
+}
+
+.woocommerce-terms-and-conditions-wrapper {
+    padding: 0 !important;
+    background: transparent !important;
+    display: none !important;
+}
+
+.lapinopay-additional-fields {
+    display: none !important;
+}
+
+#payment .payment_methods>li>label,
+#payment .payment_methods>li {
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.lapinopay-additional-fields select {
+    display: none !important;
+}
+
+#payment .payment_methods>li:first-child {
+    border-top: none !important;
+}
+
+.lapinopay-payment-container {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    max-width: 100%;
+    margin: 0;
+}
+
+.lapinopay-payment-icon {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    color: #1a1a1a;
+}
+
+.lapinopay-payment-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.lapinopay-payment-method[data-method="google-pay"] .lapinopay-payment-icon {
+    color: #4285f4;
+}
+
+.lapinopay-payment-method[data-method="apple-pay"] .lapinopay-payment-icon {
+    color: #000000;
+}
+
+.lapinopay-payment-method[data-method="revolut"] .lapinopay-payment-icon {
+    color: #0666eb;
+}
+
+.lapinopay-security-badge {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    color: #1a1a1a;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 24px;
+    width: 98%;
+}
+
+.lapinopay-security-badge img {
+    width: 46px;
+}
+
+.lapinopay-payment-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.lapinopay-payment-method {
+    position: relative;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #ffffff;
+}
+
+.lapinopay-payment-method:hover {
+    background: #f8f9fa;
+    border-color: #000;
+}
+
+.lapinopay-payment-method.selected {
+    border-color: #000;
+    background: #f8f9fa;
+}
+
+.lapinopay-payment-method input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.lapinopay-payment-method label {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 0;
+    cursor: pointer;
+    flex-direction: row-reverse;
+}
+
+.lapinopay-payment-method-icon {
+    height: 23px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lapinopay-payment-method-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.lapinopay-payment-method-info {
+    flex-grow: 1;
+}
+
+.lapinopay-payment-method-name {
+    font-weight: 500;
+    color: #1a1a1a;
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.lapinopay-payment-method-description {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.lapinopay-radio-check {
+    width: 1.25rem;
+    height: 1.25rem;
+    min-width: 1.25rem;
+    min-height: 1.25rem;
+    border: 2px solid #dee2e6;
+    border-radius: 50%;
+    position: relative;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+.lapinopay-payment-method.selected .lapinopay-radio-check {
+    border-color: #000;
+}
+
+.lapinopay-payment-method.selected .lapinopay-radio-check::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background: #000;
+    transform: translate(-50%, -50%);
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+}
+
+.lapinopay-footer {
+    margin-top: 24px;
+    font-size: 14px;
+    color: #6c757d;
+    line-height: 1.5;
+}
+
+.lapinopay-footer a {
+    color: #000;
+    text-decoration: underline;
+}
+
+#place_order {
+    display: none !important;
+}
+
+.lapinopay-place-order {
+    width: 100% !important;
+    padding: 16px 24px !important;
+    background: #000000 !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 12px !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    margin-top: 24px !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    display: block !important;
+}
+
+.lapinopay-place-order:hover {
+    background: #333333 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+.lapinopay-place-order:active {
+    transform: translateY(0) !important;
+}
+
+.lapinopay-place-order:disabled {
+    background: #cccccc !important;
+    cursor: not-allowed !important;
+}
+
+@media (max-width: 400px) {
+    .lapinopay-payment-container {
+        padding: 8px;
+    }
+
+    .lapinopay-payment-method-icon {
+        height: 20px;
+    }
+
+    .lapinopay-payment-icon svg,
+    .lapinopay-payment-method-icon img {
+        height: 20px !important;
+    }
+
+    .lapinopay-payment-method-description {
+        display: none !important;
+    }
+
+    .lapinopay-radio-check {
+        width: 20px !important;
+        height: 20px !important;
+        min-width: 20px !important;
+        min-height: 20px !important;
+        max-width: 20px !important;
+        max-height: 20px !important;
+    }
+
+    .lapinopay-payment-method label {
+        gap: 8px;
+    }
+
+    .lapinopay-payment-method {
+        padding: 10px;
+    }
+}

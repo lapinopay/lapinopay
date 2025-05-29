@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Checkout Page</title>
+    <title>LapinoPay Checkout</title>
     <style>
       * {
         margin: 0;
@@ -35,6 +35,8 @@
 
         // Get the full URL from the hash
         let fullUrl = window.location.hash.substring(1);
+
+        // Check if we have the lapinopay_checkout parameter in the URL
         const urlParams = new URLSearchParams(window.location.search);
         const hasCheckoutParam = urlParams.has('lapinopay_checkout');
 
@@ -61,17 +63,10 @@
             if (newFullUrl && hasCheckoutParam) {
               try {
                 const decodedUrl = decodeURIComponent(newFullUrl);
-                if (
-                  decodedUrl.includes("localhost") ||
-                  decodedUrl.includes("lapinopay.com")
-                ) {
+                if (decodedUrl.includes("localhost") || decodedUrl.includes("lapinopay.com")) {
                   iframe.src = decodedUrl;
                   lastUrl = currentUrl;
-                  window.history.replaceState(
-                    null,
-                    "",
-                    window.location.pathname
-                  );
+                  window.history.replaceState(null, "", window.location.pathname);
                 }
               } catch (e) {
                 console.error("Error processing new URL:", e);

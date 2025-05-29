@@ -31,9 +31,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS
     exit(0);
 }
 
-add_action('plugins_loaded', 'init_lapinopay_gateway');
+add_action('plugins_loaded', 'lapinopay_register_payment_gateway');
 
-function init_lapinopay_gateway() {
+function lapinopay_register_payment_gateway() {
     if (!class_exists('WC_Payment_Gateway')) {
         return;
     }
@@ -143,7 +143,10 @@ function init_lapinopay_gateway() {
                 ]
             ]);
             $response = file_get_contents($validation_url, false, $context);
-            echo '<script>logValidation(' . esc_js($response) . ');</script>';
+            
+            // Register and enqueue the script for validation logging
+            lapinopay_enqueue_validation_script($response);
+            
             $http_status = explode(" ", $http_response_header[0])[1];
             if ($http_status === '200') {
                 return array('success' => true);
@@ -318,7 +321,7 @@ function init_lapinopay_gateway() {
             $this->log_message('URL Parameters: ' . wp_json_encode($url_params));
             $redirect_url = add_query_arg($url_params, $this->checkout_url);
             $this->log_message('Final Redirect URL: ' . $redirect_url);
-            $go_to_checkout_url = $site_url . '/?lapinopay_checkout#' . urlencode($redirect_url);
+            $go_to_checkout_url = $site_url . '/lapinopay_checkout#' . urlencode($redirect_url);
 
             return array(
                 'result'   => 'success',
@@ -453,25 +456,39 @@ function init_lapinopay_gateway() {
         }
     }
 
-    add_filter('woocommerce_payment_gateways', function($gateways) {
-        $gateways[] = 'Lapino_Instant_Payment_Gateway';
-        return $gateways;
-    });
+    function add_lapinopay_gateway($methods) {
+        $methods[] = 'Lapino_Instant_Payment_Gateway';
+        return $methods;
+    }
+    add_filter('woocommerce_payment_gateways', 'add_lapinopay_gateway');
 }
 
 // Then modify your REST API registration
 add_action('rest_api_init', function() {
     register_rest_route('lapinopay/v1', '/payment-callback/', array(
         'methods' => ['GET', 'POST', 'OPTIONS'],
-        'callback' => 'handle_payment_callback',
+        'callback' => 'lapinopay_process_payment_callback',
         'permission_callback' => function() {
             return true; // Adjust this based on your security needs
         }
     ));
 });
 
+// Register and enqueue the script for validation logging
+function lapinopay_enqueue_validation_script($response) {
+    wp_register_script(
+        'lapinopay-validation-log',
+        false,
+        array(),
+        filemtime(plugin_dir_path(__FILE__)),
+        true
+    );
+    wp_enqueue_script('lapinopay-validation-log');
+    wp_add_inline_script('lapinopay-validation-log', 'logValidation(' . wp_json_encode($response) . ');');
+}
+
 // Modify your callback handler
-function handle_payment_callback($request) {
+function lapinopay_process_payment_callback($request) {
     $order_id = absint($request->get_param('order_id'));
     $nonce = sanitize_text_field($request->get_param('nonce'));
     $txid = sanitize_text_field($request->get_param('txid'));
@@ -554,6 +571,7 @@ function handle_payment_callback($request) {
     }
 }
 
+// Add payment complete hook
 add_action('woocommerce_payment_complete', function($order_id) {
     $order = wc_get_order($order_id);
     wc_get_logger()->info(
